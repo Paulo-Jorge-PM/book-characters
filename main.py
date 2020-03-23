@@ -5,15 +5,14 @@ import os, sys
 import pprint
 from views import gui
 
-from nlp import characters, graph
-from nlp import nltkFilter
+from nlp import characters, graph, nltkFilter
 
 class Main:
 
     def __init__(self):
         self.configs = self.readConfigs()
-        #print(self.getText())
-        self.pairs = self.startNLP(self.getText())
+        
+        self.pairs, self.characters = self.startNLP(self.getText())
         p = pprint.PrettyPrinter(indent=4)
         #p.pprint(self.pairs)
         #print(self.pairs)
@@ -29,10 +28,12 @@ class Main:
         return(gui, default, storage)
 
     def setGui(self):
+        print('>Loading GUI (Webview Frame + Flask Server)...')
         if self.configs[0] == "webview":
-            return gui.Gui(configs=self.configs, pairs=self.pairs)
+            return gui.Gui(configs=self.configs, pairs=self.pairs, characters=self.characters)
 
     def getText(self):
+        print('>Loading text...')
         baseDir = os.path.dirname(__file__)
         defaultText = os.path.join(baseDir, 'data/harryPotter.txt')
         text = ""
@@ -41,19 +42,27 @@ class Main:
                 text += line
         return text
 
-    def startNLP(sefl, text):
-        pairs = characters.Characters(text).pairs
+    def startNLP(self, text):
+        print('>Loading NLP analysis...')
+        #entities = characters.Characters(text)
+        #pairs = entities.pairs
+        #characters = entities.characters
         entities = characters.Characters(text)
+        pairs = entities.pairs
+        chars = entities.entities
+        #characters = entities.entities
+        
 
         #textNLTK = nltkFilter.Filter(text)
         #bigramsNLTK = textNLTK.bigrams
         #print(bigramsNLTK)
 
-        sortedPairs = sorted(entities.pairs.items(), key=lambda x: x[1], reverse=True)
-        return sortedPairs
+        sortedPairs = sorted(pairs.items(), key=lambda x: x[1], reverse=True)
+        sortedchars = sorted(chars.items(), key=lambda x: x[1], reverse=True)
+        return sortedPairs, sortedchars
 
 if __name__ == '__main__':
-    sys.dont_write_bytecode = True
+    #sys.dont_write_bytecode = True
     main = Main()
 
     """baseDir = os.path.dirname(__file__)

@@ -3,21 +3,7 @@
 
 import fileinput
 import re
-#rom nlp import nltkFilter
-
-
-"""import os
-
-baseDir = os.path.dirname(__file__)
-defaultText = os.path.join(baseDir, 'data/harryPotter.txt')
-
-text = ""
-
-with open(defaultText, "r") as file:
-    for line in file:
-        text += line
-
-Characters(text)"""
+from nlp import nltkFilter
 
 class Characters:
 
@@ -27,9 +13,10 @@ class Characters:
         self.text = text
 
         self.phrases = []
-        self.characters = {}
+        self.entities = {}
         self.rawPairs = []#tuples (x,y)
         self.pairs = {}#{(pair):count}
+        self.bigrams = nltkFilter.Filter(self.text).bigrams
 
         ### PROCESS START
         #Clean text
@@ -48,35 +35,39 @@ class Characters:
         #Count and clean/filter Relationships:
         self.countRelationships()
 
+        #NLTK
+        #self.filterAllNouns()
+
         #print(self.pairs)
 
 
 
     def cleanText(self, text):
+        print('>Cleaning text...')
         """
         ### Delete headers e.g.: "Page | 2 Harry Potter and the Philosophers Stone - J.K. Rowling"
         ### Note: it is not always the same, some headers have "- J.K. Rowling" others "-J.K. Rowling" without space
         ### And delete line breaks, and multiple spaces
         """
+
         text = text.replace('THE BOY WHO LIVED','')#delete title in upper case
         exp = r'Page \| (.*) Harry Potter and the Philosophers Stone - J.K. Rowling'
         exp2 = r'Page \| (.*) Harry Potter and the Philosophers Stone -J.K. Rowling'
         text = re.sub(exp, '', text)
         text = re.sub(exp2, '', text)
         #The phrases are broken in lines, and each line starts in upper case. We dont want upper case or it will be recognized as Proper Nound
-        text = text.replace('\n','{{{@lb}}}')
-        exp3 = r'{{{@lb}}}([A-Z])'
+        text = text.replace('\n',' ')
+        #text = text.replace('\n','{{{@lb}}}')
+        #exp3 = r'{{{@lb}}}([A-Z])'
         #Send regex \1 to function so we can lower case
-        text = re.sub(exp3, regexUpper, text)
-        text = text.replace('{{{@lb}}}','')
-        text = text.replace('mcGonagall','McGonagall')
-        #text = text.replace('\r','')
-        text = ' '.join(text.split())#Delete multiple spaces
-        #print(text)
+        #text = re.sub(exp3, regexUpper, text)
+        #text = text.replace('{{{@lb}}}','')
+        text = ' '.join(text.split())#Transforme multiple spaces into one
         return text
 
 
     def getPhrases(self, text):
+        print('>Getting phrases...')
         #filter cases with . that could trigher a phrase stop
         alphabets= "([A-Za-z])"
         prefixes = "(Mr|St|Mrs|Ms|Dr)[.]"
@@ -113,8 +104,8 @@ class Characters:
 
     def getProperNouns(self, text):
         prefixes = r"(Mr.|Professor|Miss|St.|Mrs.|Ms.|Dr.|mr.|mrs.)\s"
-        junk = r"(Yes|But|Dear|Fer|For|The|To|Yet|As|Given|Make|Day|Very|See|Rise|Play)\s"
-        fakeEntities = r"(Good Lord|Great Britain|High Table|Happy Birthday|Potters|Merry Christmas|Quidditch|Know|Who|Know Who|Stone|Sorcerer|Nimbus Two Thousand|Nimbus Two|Thousand|Defense Against|Dark arts)"
+        #junk = r"(Yes|But|Dear|Fer|For|The|To|Yet|As|Given|Make|Day|Very|See|Rise|Play)\s"
+        #fakeEntities = r"(Good Lord|Slytherin|Hufflepuff|Great Britain|High Table|Happy Birthday|Potters|Merry Christmas|Quidditch|Know|Who|Know Who|Stone|Sorcerer|Nimbus Two Thousand|Nimbus Two|Thousand|Defense Against|Dark arts)"
         #titles = r"(?:[A-Z][a-z]*\.\s*)?"
         name1 = r"[A-Z][a-z]+,?\s+"
         nameAbrev = r"(?:[A-Z][a-z]*\.?\s*)?"
@@ -147,47 +138,118 @@ class Characters:
             #Delete Mr. Professor, etc.
             
             noun = re.sub(prefixes, '', noun)
-            noun = noun.replace("Mrs", "")
-            noun = noun.replace("Mr", "")
-            noun = noun.replace("Yes", "")
+            #noun = noun.replace("Mrs", "")
+            noun = noun.replace("Mr.", "")
+            #noun = noun.replace("Mr", "")
+            noun = noun.replace("Miss", "")
             noun = noun.replace("Professor", "")
-            noun = noun.replace("Slytherin", "")
-            noun = noun.replace("Hufflepuff", "")
-            noun = noun.replace("You", "")
-            noun = noun.replace("Wood", "")
-            noun = noun.replace("Hogwarts", "")
-            if noun.strip() == "Potter":
-                noun = "Harry Potter"
-            elif noun.strip() == "Harry":
-                noun = "Harry Potter"
-            if noun.strip() == "He":
-                noun = noun.replace("He", "")
-            if noun.strip() == "Uncle":
-                noun = noun.replace("Uncle", "") 
-            #Delete Junk that appears capitalized in middle of phrases like Dear, The ("The Harry Potter"), etc
-            noun = re.sub(junk, '', noun)
-            #Delete fake entities like Happy Birthday (capitalized but is not a noun)
-            noun = re.sub(fakeEntities, '', noun)
-            #Unify different variantes of same name p.e. H. Potter = Harry Potter
-            #if "Harry Potter"
+            noun = noun.replace("Uncle", "")
+            noun = noun.replace("Aunt", "")
+            noun = noun.replace("Madam", "")
+            noun = noun.replace("Mrs.", "")
+            #noun = noun.replace("Slytherin", "")
+            #noun = noun.replace("Hufflepuff", "")
+            #noun = noun.replace("You", "")
+            #noun = noun.replace("Hogwarts", "")
+
             noun = noun.strip()
+            # Make names pattern. Sometimes same name has vary forms, f.e. Rornald = Ron = Wieasly
+            if noun == "Mrs. Dursley":
+                noun = "Petunia"
+            elif noun == "Mr. Dursley":
+                noun = "Vernon"
+            elif noun == "mcGonagall":
+                noun = "McGonagall"
+            elif noun == "Ronald" or noun == "Ronald Weasley":
+                noun = "Ron"
+            elif noun == "Hermione Granger" or noun == "Granger":
+                noun = "Hermione"
+            elif noun == "Severus Snape":
+                noun = "Snape"
+            elif noun == "Albus Dumbledore":
+                noun = "Dumbledore"
+            elif noun == "Potter" or noun == "Harry" or noun == "Harry Potted":
+                noun = "Harry Potter"
+            else:
+                #I want all other names only by 1st name
+                noun = noun.split(" ")[0]
+
+
+            #Delete Junk that appears capitalized in middle of phrases like Dear, The ("The Harry Potter"), etc
+            #noun = re.sub(junk, '', noun)
+            #Delete fake entities like Happy Birthday (capitalized but is not a noun)
+            #noun = re.sub(fakeEntities, '', noun)
+            noun = noun.strip()
+
+
+            #FILTER WITH BIGRAMS
+            noun = self.filterNouns(noun)
+
             if noun != "":
                 nouns.append(noun)
                 #print(noun)
+
         return nouns
 
+    def filterNouns(self, noun):
+        ### FILTERING STRATEGIES:
+        ### If the Proper Noun gas an apostrofe after, f.e. Harry's, Ron's (possessive more common in Proper Nouns)
+
+        #afterFilters = ['’']
+        afterFilters = ["weren’t", "said"] #weren’t = for Crabbe (no Mr.); "said" because of Hagrid (has not Mr.). Proper Nouns usually have verbs after
+        beforeFilters = ['Mr.', 'Miss', 'Professor', 'Uncle', 'Aunt', 'Madam', 'Mrs.']
+        #beforeFilters = []
+
+        n = ""
+
+        ## USING NLTK bigrams takes a lot of time to check all. So opted for regex instead, but this commented code works
+        """for f in afterFilters:
+            pair = (noun, f)
+            if pair in self.bigrams:
+                n = noun
+                break
+        
+
+        for f in beforeFilters:
+            pair = (f, noun)
+            if pair in self.bigrams:
+                n = noun
+                break
+        """
+
+        ### oun.split(" ")[0] because full names like Harry Potter would not be counted if only Mr. Harry appeared. I want only to search 1st names
+        for f in beforeFilters:
+            exp = r''+f+'\s'+noun.split(" ")[0]+''
+
+            if re.search(exp, self.text):
+                n = noun
+                break
+            #P.e. if it has Professor Dumledor in itself not before
+            elif f in noun:
+                n = noun
+
+        for f in afterFilters:
+            exp = r''+noun.split(" ")[0]+'\s'+f+''
+            if re.search(exp, self.text):
+                n = noun
+                break
+
+        if n in ["He", "There", "It", "We", "You", "s", "Next", "She", "No", "They", "Where", "Or", "Dunno"]:
+            n = ""
+
+        return n
 
     """def setCharacters(self, dataset):
         entities = []
         for entity in dataset:
             if entity[0] != '' and entity[0] not in entities:
                 entities.append(entity[0])
-        self.characters = entities"""
+        self.entities = entities"""
 
 
 
     def getRelationships(self):
-
+        print('>Getting Proper Nouns...')
         for phrase in self.phrases:
             #We dont want the 1st letter to be capitalized, because it would be detected as noun:
             phrase = phrase.strip()
@@ -203,13 +265,15 @@ class Characters:
             entities = []
 
             for char in entitiesRaw:
-                if char != '' and char not in entities:
-                    entities.append(char)
-                    #Add to the lobal list
-                    if char not in self.characters:
-                        self.characters[char] = 1
+                if char != '':
+                    #Filter it so we don't get duplicated pairs
+                    if char not in entities:
+                        entities.append(char)
+                    #Add to the Global list totals
+                    if char not in self.entities:
+                        self.entities[char] = 1
                     else:
-                        self.characters[char] = self.characters[char] + 1
+                        self.entities[char] = self.entities[char] + 1
 
             #If more than one character in the sentence = character is with people/friends/enemies = has relashionship
             #Make and count pairs
@@ -267,6 +331,7 @@ class Characters:
 
     def countRelationships(self):
 
+        print('>Getting relashionships per phrase...')
         #Make pairs unique and count them
         for pair in self.rawPairs:
 
@@ -280,7 +345,35 @@ class Characters:
                     self.pairs[pair] = self.pairs[pair] + 1
 
            
+    def filterAllNouns(self):
+        #ngrams = nltk.ngrams(input_list,n=2)
+        #nltk = nltkFilter.Filter(self.text)
+        #rams = nltk.bigrams
 
+        ### FILTERING STRATEGIES:
+        ### If the Proper Noun gas an apostrofe after, f.e. Harry's, Ron's (possessive more common in Proper Nouns)
+        #format in the original: ('Mr.', 'Harry') ou ('Harry', '’')
+        #[print(x) for x in self.bigrams]
+        filteredCharacters = []
+        for c in self.entities:
+            
+            #afterFilters = ['’']
+            afterFilters = ['were']
+            beforeFilters = ['Mr.', 'Miss', 'Professor', 'Uncle', 'Madam', 'Mrs.']
+
+            for f in afterFilters:
+                pair = (c, f)
+                if pair in self.bigrams:
+                    if c not in filteredCharacters:
+                        filteredCharacters.append(c)
+
+            for f in beforeFilters:
+                pair = (f, c)
+                if pair in self.bigrams:
+                    if c not in filteredCharacters:
+                        filteredCharacters.append(c)
+
+        print(filteredCharacters)
 
 
 
@@ -288,5 +381,5 @@ class Characters:
 
 
 #Suport functions
-def regexUpper(match):
-     return match.group(1).lower()
+#def regexUpper(match):
+#     return match.group(1).lower()

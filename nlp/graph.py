@@ -5,9 +5,9 @@ import threading
 import networkx as nx
 import numpy as np
 import matplotlib.pyplot as plt
-import pylab
+#import pylab
 
-SHOW_N_NODES = 33
+SHOW_N_NODES = 100
 
 class Graph():
     def __init__(self, dataset=None):
@@ -63,8 +63,8 @@ class Graph():
         plt.pause(0.01)
 
     def start(self):
-        
-        pylab.show()
+        pass
+        #pylab.show()
 
     def clear(self):
         self.G.clear()

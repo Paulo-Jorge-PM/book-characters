@@ -13,6 +13,7 @@ class Filter:
 
     def __init__(self, text):
         ### DATA
+        print('>Loading NLTK bigram analysis & filtering...')
         self.text = text
 
         #Config NLTK base data dir i corpus pre downloaded, so the user don't need to download it
@@ -26,8 +27,13 @@ class Filter:
         self.properNouns = self.getProperNouns(self.tags)
         self.nouns = self.summarizeText(self.properNouns, 100)
 
-        self.bigrams = self.bigramsNouns(self.nouns)
-        self.frequency = self.gramFrequency(self.text, self.nouns)
+        self.bigrams = self.bigramsNouns(self.tokens)
+
+        #Apóstrofe 's - Harry', '’
+        #[print(x) for x in self.bigrams]
+
+        #self.bigrams = self.bigramsNouns(self.nouns)
+        #self.frequency = self.gramFrequency(self.text, self.nouns)
         #self.printNouns(self.nouns)
 
     def getTokens(self, txt):
@@ -60,12 +66,14 @@ class Filter:
         return counts
 
     def bigramsNouns(self, words):
-        n = 2
-        ngrams = []
-        for l in words:
-            for i in range(n,len(l)+1):
-                ngrams.append(l[i-n:i])
-        return ngrams
+        
+        ngrams = nltk.ngrams(words, n=2)
+        #n = 2
+        #ngrams = []
+        #for l in words:
+        #    for i in range(n,len(l)+1):
+        #        ngrams.append(l[i-n:i])
+        return list(ngrams)
 
     def gramFrequency(self, text, words):
         n = 3

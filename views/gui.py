@@ -12,25 +12,24 @@ from flask import Flask, current_app
 from views.routes import flaskRoutes
 
 class Gui(Flask):
-    def __init__(self, import_name=__name__, configs=None, pairs=None):
+    def __init__(self, import_name=__name__, configs=None, pairs=None, characters=None):
         super(Gui, self).__init__(import_name=__name__, static_folder='static', template_folder='templates')
 
         self.configs = configs
         self.pairs = pairs
-        
+        self.entities = characters
+        #[print(x) for x in self.characters]
 
+        #c=1
+        #self.filteredData = self.pairs
+        #for p in self.pairs:
+        #    if c<=33:
+        #        self.filteredData.append(p)
+        #        c+=1
 
-        c=1
-        self.filteredData = []
-        for p in self.pairs:
-            #print(p)
-            if c<=33:
-                self.filteredData.append(p)
-                c+=1
-
+        print('>Drawing Graphs with NetworkX & Matplotlib...')
         self.emptyGraph = graph.Graph()
-        self.graph = graph.Graph(self.filteredData)
-
+        self.graph = graph.Graph(self.pairs)
 
         #Start a Flask server in a thread
         self.server = threading.Thread(target=self.startServer)
@@ -64,19 +63,19 @@ class Gui(Flask):
             storage = self.configs[2]
         )
 
-    def threadGraph(self):
-        self.graph = graph.Graph(self.filteredData)
+    #def threadGraph(self):
+    #    self.graph = graph.Graph(self.filteredData)
 
-    def newGraph(self, data):
-        graph = threading.Thread(target=startGraph, args=(data,))
-        graph.daemon = True
-        graph.start()
+    #def newGraph(self, data):
+    #    graph = threading.Thread(target=startGraph, args=(data,))
+    #    graph.daemon = True
+    #    graph.start()
 
         #return g
 
-def startGraph(data):
-    g = graph.Graph()
-    g.addNodes(data)
-    g.configEdges()
-    g.draw()
-    g.start()
+#def startGraph(data):
+#    g = graph.Graph()
+#    g.addNodes(data)
+#    g.configEdges()
+#    g.draw()
+#    g.start()

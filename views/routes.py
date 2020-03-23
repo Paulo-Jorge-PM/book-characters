@@ -35,10 +35,8 @@ def pairs():
     data = current_app.pairs
 
     print("=============================")
-    print("=============================")
     print("GRAPH DATA FOR THE MOST COMMON RELASHIONSHIPS IS:")
-    print(current_app.filteredData)
-    print("=============================")
+    print(current_app.pairs)
     print("=============================")
 
     #Need to run in other thread, or else it enters in conflit with Flask
@@ -50,7 +48,7 @@ def pairs():
     current_app.graph.draw()
     current_app.graph.start()
 
-    current_app.graph.start()
+    #current_app.graph.start()
     #g = graph.Graph(data)
     #graph = threading.Thread(target=drawGraph, args=(g,))
     #graph.daemon = True
@@ -66,11 +64,14 @@ def drawGraph(data):
 
 @flaskRoutes.route('/pair')
 def pair():
+
     entity = request.args.get('entity')
+
     print("=============================")
     print("=============================")
-    print(entity + "GRAPH DATA IS:")
-    data = current_app.filteredData
+    print(entity + " GRAPH DATA IS:")
+    
+    data = current_app.pairs
 
     newData = []
     for pp in data:
@@ -104,19 +105,23 @@ def pair():
 def index():
     #default=current_app.configs[1]
     data = current_app.pairs
+    #globalEntities = current_app.entities
 
-    c=1
-    filteredData = []
-    for p in data:
-        #print(p)
-        if c<=33:
-            filteredData.append(p)
-            c+=1
+    #c=1
+    #filteredData = []
+    #for p in data:
+    #    if c<=33:
+    #        filteredData.append(p)
+    ##        c+=1
 
+    #entities={}
     entities=[]
-    for pp in filteredData:
+    #for pp in filteredData:
+    for pp in data:
         if pp[0][0] not in entities:
+            #entities[pp[0][0]] = globalEntities[pp[0][0]]
             entities.append(pp[0][0])
         if pp[0][1] not in entities:
+            #entities[pp[0][1]] = globalEntities[pp[0][1]]
             entities.append(pp[0][1])
-    return render_template("index.html", pairs=filteredData, persons=entities)
+    return render_template("index.html", pairs=data, persons=entities)

@@ -32,7 +32,7 @@
 </span>
 </div>-->
 
-	<p><b>Or show an indivudal/smaller graph with relashionships for a specific Character:</b>b></p>
+	<p><b>Or show an indivudal/smaller graph with relashionships for a specific Character:</b></p>
 	<div id="log" style="background:#f6f6f6;min-height:150px;border:1px solid #333333;padding:5px 10px;">
 
 		{% for p in persons: %}
@@ -47,16 +47,16 @@
 
 	<div id="log" style="background:#f6f6f6;min-height:150px;border:1px solid #333333;padding:5px 10px;">
 		
-		<p style="color:gray;font-size:12px;">*Filtered to 33 most common, because after this value we found that we start receiving fake results (Nimbus 200; Names of Spels, etc. which are not person names)</p>
+		<!--<p style="color:gray;font-size:12px;">*Filtered to 33 most common, because after this value we found that we start receiving fake results (Nimbus 200; Names of Spels, etc. which are not person names)</p>-->
 		<br>
 
 		<ul>
-		{% set count = namespace(value=0) %}
+		{#% set count = namespace(value=0) %#}
 		{% for p in pairs: %}
-			{% if count.value<=33: %}
+			{#% if count.value<=33: %#}
 				<li>{{ p[0] }}, {{ p[1] }}</li>
-				{% set count.value = count.value + 1 %}
-			{% endif %}
+				{#% set count.value = count.value + 1 %#}
+			{#% endif %#}
 		{% endfor %}
 	</ul>
 	</div>

@@ -1,0 +1,79 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+<div id="contentBar">
+    <span><h3>SPLN 2020</h3></span>
+</div>
+
+<div id="mainContent">
+<!--<button id="getMarkets" onclick="refresh()" style="float:right;">FORCE REFRESH</button>-->
+
+<p style="background:#333333;color:#ffffff;padding:1px 5px;"><b>Loaded text (Harry Potter):</b> {{ hp }}</p>
+
+<br>
+
+<h3>RELASHIONSHIPS IN HARRY POTTER:</h3>
+<button onclick="showPairs()" style="color:green;font-size:22px;padding:10px 20px;">SHOW FULL GRAPH</button>
+
+
+<!--
+<p style="background:#333333;color:#ffffff;padding:1px 5px;"><b>Use other text:</b> </p>
+<form action="#" method="post">
+    <input type="file">
+    <input type="submit" value="Submit">
+</form>
+
+<br>
+<div id="logs" style="background:#d3d3d3;min-height:150px;border:1px solid #333333;padding:5px 10px;">
+<h3>Log:</h3>
+<span class="log" style="font-size:10px;">
+
+</span>
+</div>-->
+
+	<p><b>Or show an indivudal/smaller graph with relashionships for a specific Character:</b></p>
+	<div id="log" style="background:#f6f6f6;min-height:150px;border:1px solid #333333;padding:5px 10px;">
+
+		{% for p in persons: %}
+				<button onclick='showPair("{{ p }}")'>{{ p }}</button><br>
+		{% endfor %}
+
+	</div>
+
+<br><br><br>
+
+
+
+	<div id="log" style="background:#f6f6f6;min-height:150px;border:1px solid #333333;padding:5px 10px;">
+		
+		<!--<p style="color:gray;font-size:12px;">*Filtered to 33 most common, because after this value we found that we start receiving fake results (Nimbus 200; Names of Spels, etc. which are not person names)</p>-->
+		<br>
+
+		<ul>
+		{#% set count = namespace(value=0) %#}
+		{% for p in pairs: %}
+			{#% if count.value<=33: %#}
+				<li>{{ p[0] }}, {{ p[1] }}</li>
+				{#% set count.value = count.value + 1 %#}
+			{#% endif %#}
+		{% endfor %}
+	</ul>
+	</div>
+
+<br><br>
+
+
+</div>
+
+<script>
+function showPairs() {
+    pairs();
+}
+
+function showPair(p) {
+    pair(p);
+}
+</script>
+
+{% endblock %}

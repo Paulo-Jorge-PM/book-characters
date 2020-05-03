@@ -11,8 +11,8 @@ class Main:
 
     def __init__(self):
         self.configs = self.readConfigs()
-        
-        self.pairs, self.characters = self.startNLP(self.getText())
+        self.text = self.getText()
+        self.pairs, self.characters = self.startNLP(self.text)
         p = pprint.PrettyPrinter(indent=4)
         #p.pprint(self.pairs)
         #print(self.pairs)
@@ -29,8 +29,9 @@ class Main:
 
     def setGui(self):
         print('>Loading GUI (Webview Frame + Flask Server)...')
+        baseDir = os.path.dirname(__file__)
         if self.configs[0] == "webview":
-            return gui.Gui(configs=self.configs, pairs=self.pairs, characters=self.characters)
+            return gui.Gui(configs=self.configs, pairs=self.pairs, characters=self.characters, text=self.text, dirMain=baseDir)
 
     def getText(self):
         print('>Loading text...')

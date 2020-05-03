@@ -5,6 +5,7 @@ import webview
 import sys
 import threading
 import webview
+import os
 
 from nlp import graph
 
@@ -12,12 +13,14 @@ from flask import Flask, current_app
 from views.routes import flaskRoutes
 
 class Gui(Flask):
-    def __init__(self, import_name=__name__, configs=None, pairs=None, characters=None):
+    def __init__(self, import_name=__name__, configs=None, pairs=None, characters=None, text=None, dirMain=None):
         super(Gui, self).__init__(import_name=__name__, static_folder='static', template_folder='templates')
 
         self.configs = configs
         self.pairs = pairs
         self.entities = characters
+        self.text = text
+        self.baseDir = dirMain
         #[print(x) for x in self.characters]
 
         #c=1

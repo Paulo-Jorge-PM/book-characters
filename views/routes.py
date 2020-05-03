@@ -5,11 +5,12 @@ import threading, multiprocessing
 from flask import Blueprint, render_template, current_app, Response, request, redirect
 
 from nlp import graph
+import os, re
 
 #from core import nlp
 
 #flaskRoutes = Decorator da function routes do Flask started em gui.py
-flaskRoutes = Blueprint('routes', __name__)
+flaskRoutes = Blueprint('routes', __name__, template_folder='views')
 
 #===General config for templates without router
 #@flaskRoutes.context_processor
@@ -125,3 +126,79 @@ def index():
             #entities[pp[0][1]] = globalEntities[pp[0][1]]
             entities.append(pp[0][1])
     return render_template("index.html", pairs=data, persons=entities)
+
+
+@flaskRoutes.route('/jinja', methods=['GET', 'POST'])
+def jinja():
+    Harry = request.args.get('heroi', None)
+    Hermione = request.args.get('namorada', None)
+    Ron = request.args.get('amigo', None)
+
+    if Harry and Hermione and Ron:
+        Harry = '<span class="harry">' + Harry + '</span>'
+        Hermione = '<span class="hermione">' + Hermione + '</span>'
+        Ron = '<span class="ron">' + Ron + '</span>'
+        ready = 'True'
+    else:
+        ready = 'False'
+
+    if request.method == 'POST':
+        Harry = request.values.get('heroi')
+        ready = 'post'
+
+    data = current_app.pairs
+    text = current_app.text
+
+    text = text.replace('THE BOY WHO LIVED','')
+    exp = r'Page \| (.*) Harry Potter and the Philosophers Stone - J.K. Rowling'
+    exp2 = r'Page \| (.*) Harry Potter and the Philosophers Stone -J.K. Rowling'
+    text = re.sub(exp, '', text)
+    text = re.sub(exp2, '', text)
+    text = text.replace('\n',' ')
+    text = ' '.join(text.split())
+
+    baseDir = current_app.baseDir
+    persons=[]
+    for pp in data:
+        if pp[0][0] not in persons:
+            persons.append(pp[0][0])
+        if pp[0][1] not in persons:
+            persons.append(pp[0][1])
+
+    gerar(text, baseDir)
+
+    return render_template("jinja.html", data="", 
+        persons=persons, 
+        pairs=data, 
+        Harry= Harry,
+        Hermione=Hermione,
+        Ron=Ron,
+        ready=ready)
+
+
+def gerar(text, baseDir):
+    #Herói
+    templateText = re.sub(r'Harry Potter', '{{ Harry }}', text)
+    templateText = re.sub(r'Harry(?! }})', '{{ Harry }}', templateText)
+    templateText = re.sub(r'Mr\. Potter', '{{ Harry }}', templateText)
+
+    #Namorada/o
+    templateText = re.sub(r'Hermione Jean Granger', '{{ Hermione }}', templateText)
+    templateText = re.sub(r'Hermione Granger(?! }})', '{{ Hermione }}', templateText)
+    templateText = re.sub(r'Miss Hermione(?! }})', '{{ Hermione }}', templateText)
+    templateText = re.sub(r'Miss Granger(?! }})', '{{ Hermione }}', templateText)
+    templateText = re.sub(r'Hermione(?! }})', '{{ Hermione }}', templateText)
+
+    #Melhor amigo 
+    templateText = re.sub(r'Ron Weasley', '{{ Ron }}', templateText)
+    templateText = re.sub(r'Mr. Weasley(?! }})', '{{ Ron }}', templateText)
+    templateText = re.sub(r'Ron(?! }})', '{{ Ron }}', templateText)
+
+    #SAFE
+    templateText = templateText.replace('{{ Harry }}', '{{ Harry|safe }}')
+    templateText = templateText.replace('{{ Hermione }}', '{{ Hermione|safe }}')
+    templateText = templateText.replace('{{ Ron }}', '{{ Ron|safe }}')
+
+    saveDir = os.path.join(baseDir, 'views/templates/harryPotter-template.html')
+    with open(saveDir, "w") as file:
+        file.write(templateText)

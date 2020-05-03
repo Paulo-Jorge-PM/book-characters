@@ -1,0 +1,74 @@
+{% extends "layout.html" %}
+
+{% block head %}
+<style type="text/css">
+.harry {
+font-weight:bold;
+background:yellow;
+color:red;
+font-size:22px;
+}
+
+.ron {
+font-weight:bold;
+background:yellow;
+color:blue;
+font-size:22px;
+}
+
+.hermione {
+font-weight:bold;
+background:yellow;
+color:purple;
+font-size:22px;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+
+<div id="contentBar">
+    <span><h3>SPLN 2020</h3></span>
+</div>
+
+<div id="mainContent">
+
+
+<h3>REESCREVE O HARRY POTTER!!!</h3>
+
+<p><b>Escolhe o Herói/Heroína e o casal amigo!</b></p>
+
+<form action="{{ url_for('.jinja') }}" method="get">
+<input type="text" id="heroi" name="heroi" placeholder="Quem é o Herói/Heroína?"> <input type="text" id="namorada" name="namorada" placeholder="Quem é a namorada/namorado?"> <input type="text" id="amigo" name="amigo" placeholder="Quem é o melhor amigo(a)?">
+
+<input type="submit">
+</form>
+
+<br><br>
+
+<div id="log" style="background:#f6f6f6;min-height:150px;border:1px solid #333333;padding:5px 10px;">
+{% if ready=='True': %}
+	{% autoescape off %}
+	{% include 'harryPotter-template.html' %}
+	{% endautoescape %}
+
+{% else: %}
+<i>Escolhe os teus heróis primeiro...</i>
+
+{% endif %}
+
+</div>
+
+<br><br>
+
+
+</div>
+
+<script>
+function showPairs() {
+
+}
+
+</script>
+
+{% endblock %}

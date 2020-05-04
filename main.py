@@ -14,8 +14,6 @@ class Main:
         self.text = self.getText()
         self.pairs, self.characters = self.startNLP(self.text)
         p = pprint.PrettyPrinter(indent=4)
-        #p.pprint(self.pairs)
-        #print(self.pairs)
 
         self.gui = self.setGui()
 
@@ -45,18 +43,10 @@ class Main:
 
     def startNLP(self, text):
         print('>Loading NLP analysis...')
-        #entities = characters.Characters(text)
-        #pairs = entities.pairs
-        #characters = entities.characters
         entities = characters.Characters(text)
         pairs = entities.pairs
         chars = entities.entities
-        #characters = entities.entities
-        
 
-        #textNLTK = nltkFilter.Filter(text)
-        #bigramsNLTK = textNLTK.bigrams
-        #print(bigramsNLTK)
 
         sortedPairs = sorted(pairs.items(), key=lambda x: x[1], reverse=True)
         sortedchars = sorted(chars.items(), key=lambda x: x[1], reverse=True)
@@ -65,35 +55,3 @@ class Main:
 if __name__ == '__main__':
     #sys.dont_write_bytecode = True
     main = Main()
-
-    """baseDir = os.path.dirname(__file__)
-    defaultText = os.path.join(baseDir, 'data/harryPotter.txt')
-
-    text = ""
-
-    with open(defaultText, "r") as file:
-        for line in file:
-            text += line
-
-    p = pprint.PrettyPrinter(indent=4)
-
-    pairs = characters.Characters(text).pairs
-    entities = characters.Characters(text)
-    nouns = nltkFilter.Filter(text)
-
-    p.pprint(entities.pairs)
-
-    sortedPairs = sorted(entities.pairs.items(), key=lambda x: x[1], reverse=True)
-    graph = graph.Graph(sortedPairs)"""
-
-
-
-
-    #print(sorted(entities.pairs.items(), key=lambda x: x[1]))
-    #p.pprint(entities.pairs)
-    #p.pprint(entities.characters)
-
-    #nouns.printNouns()
-    #print(sortedPairs)
-
-    #main = Main()

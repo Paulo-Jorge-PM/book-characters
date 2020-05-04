@@ -2,6 +2,8 @@
 
 Repositório para o 1º trabalho prático da cadeira "Scripting no Processamento de Linguagem Natural", no Mestrado em Engenharia Informática (UM) 2019/2020.
 
+Nota: repositório extendido com o TP2 em 4/05/2020. Para aceder ap TP2 basta executar normalmente e seleccionar a nova página "JINJA-TP2" no meu superior.
+
 ### Grupo ###
 
 * Paulo Jorge Pereira Martins (pg17918)

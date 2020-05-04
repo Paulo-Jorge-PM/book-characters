@@ -1,0 +1,18 @@
+To run: execute main.py with Python 3.6+
+
+Dependencies / Install:
+
+pip3 install flask
+(Comes already with Jinja, also needed)
+
+pip3 install pywebview
+(Note: pywebview may need aditional dependencies in some OS. Instructuin page:
+https://pywebview.flowrl.com/guide/installation.html#dependencies)
+
+pip3 install networkx
+
+pip3 install numpy
+
+pip3 install matplotlib
+
+pip3 install nltk

@@ -1,14 +1,7 @@
-# README #
+# Tool for dinamic generation of character relashionships from books #
 
-Repositório para o 1º trabalho prático da cadeira "Scripting no Processamento de Linguagem Natural", no Mestrado em Engenharia Informática (UM) 2019/2020.
-
-Nota: repositório extendido com o TP2 em 4/05/2020. Para aceder ap TP2 basta executar normalmente e seleccionar a nova página "JINJA-TP2" no meu superior.
-
-### Grupo ###
-
-* Paulo Jorge Pereira Martins (pg17918)
-* Mª Inês Vieira (pg39292)
-* Henrique Ribeiro (pg38415)
+NLP applied to the first Harry Potter book ("Harry Potter and the Philosopher's Stone"). Set of tools for dinamic generation of character relashionships from the first Harry Potter book corpus (for every proper noun in the same phrase this tool counts it as a relationship), graph visualization of the relationships, and a tool for name manipulation (changing the 3 main protagonists names in all instances in the full book), etc.
+This set of tools were made specifically for the first Harry Potter book (full book in raw txt format in the source-code), but should work with any other book with a few adjustements in the code. This is mainly a NLP tool for extracting Proper Nouns and representing them visually, extracting and representing in a graph characters relationship from books, and visually manipulating/dinamic changing characters names.
 
 
 ### Como correr/instalar ###
@@ -16,6 +9,7 @@ Nota: repositório extendido com o TP2 em 4/05/2020. Para aceder ap TP2 basta ex
 Para acorrer a aplicação basta iniciar (duplo clique ou via terminal) o ficheiro "main.py" na raiz da aplicação.
 
 É necessária uma versão Python 3.6 ou superior e as seguintes bibliotecas instaladas (exemplo via pip install):
+
 * pip3 install flask
 * pip3 install pywebview
 * pip3 install networkx
@@ -34,7 +28,7 @@ Dividimos a aplicação em módulos lógicos: o package "views" alberga todas as
 
 ### Tema do Projeto ###
 
-Neste trabalho foi-nos proposto o desafio de identificar nomes de personagens no livro Harry Potter and The Philosopher's Stone, de J.K. Rolling, e criar um grafo com a contabilização das relações entre elas.
+O principal objetivo deste conjunto de ferramentas é a identificação e extração de nomes de personagens no livro Harry Potter and The Philosopher's Stone, de J.K. Rolling, e criação de grafos com a contabilização das relações entre elas (por cada vez que personagens são mencionadas na mesma frase conta como uma relação).
 
 
 ### Estratégias Usadas ###
@@ -49,5 +43,6 @@ Neste trabalho foi-nos proposto o desafio de identificar nomes de personagens no
 Licença BSD: a aplicação pode ser utilizda ou modificada sem nenhuma restrição.
 
 
-### Contacto / Bugs ###
+### Contactos ###
 * paulo.jorge.pm@gmail.com
+* My Homepage: [www.paulojorgepm.net](www.paulojorgepm.net)

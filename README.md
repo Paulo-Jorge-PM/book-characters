@@ -1,9 +1,11 @@
-# Tool for dinamic extraction of character relashionships from books #
+# Software for dinamic extraction of character relashionships from books #
+
+Video preview: https://youtu.be/nnAGQEhnRHs
+
+![screenshot](print_spln.jpg)
 
 NLP applied to the first Harry Potter book ("Harry Potter and the Philosopher's Stone"). Set of tools for dinamic generation of character relashionships from the first Harry Potter book corpus (for every proper noun in the same phrase this tool counts it as a relationship), graph visualization of the relationships, and a tool for name manipulation (changing the 3 main protagonists names in all instances in the full book), etc.
 This set of tools were made specifically for the first Harry Potter book (full book in raw txt format in the source-code), but should work with any other book with a few adjustements in the code. This is mainly a NLP tool for extracting Proper Nouns and representing them visually, extracting and representing in a graph characters relationship from books, and visually manipulating/dinamic changing characters names.
-
-![screenshot](print_spln.jpg)
 
 ### Como correr/instalar ###
 
